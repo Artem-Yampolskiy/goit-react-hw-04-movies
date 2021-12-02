@@ -1,30 +1,29 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
-import { Link, useParams, Route, useRouteMatch, useHistory, useLocation } from 'react-router-dom';
+import { useState, useEffect,lazy, Suspense  } from 'react';
+import { Link, useParams, useNavigate, useLocation, Route, Routes } from 'react-router-dom';
 import * as moviesAPI from '../../Services/moveis-api';
 
 import styles from './MovieDetailsPage.module.css';
 
 const Cast = lazy(() =>
-  import('../../components/Cast' /* webpackChunkName: 'cast' */),
+  import('../../Components/Cast' /* webpackChunkName: 'cast' */),
 );
 const Reviews = lazy(() =>
-  import('../../components/Reviews' /* webpackChunkName: 'reviews' */),
+  import('../../Components/Reviews' /* webpackChunkName: 'reviews' */),
 );
 
 const MovieDetailsPage = () => {
   const { state } = useLocation();
-  const { movieId } = useParams();
-  const { url, path } = useRouteMatch();
+  const { movieId } = useParams();  
   const [movie, setMovie] = useState(null);
-  const history = useHistory();
-
+  const navigate = useNavigate();
+    
   useEffect(() => {
     moviesAPI.fetchMovieDetails(movieId).then(setMovie);
   }, [movieId]);
-
+  
   const handleGoBack = () => {
     if (state?.query) {
-      history.push({
+      navigate({
         pathname: state.backUrl,
         search: `query=${state.query}`,
       });
@@ -32,19 +31,20 @@ const MovieDetailsPage = () => {
     }
 
     if (!state?.query && state?.backUrl) {
-      history.push({
+      navigate({
         pathname: state.backUrl,
       });
       return;
     }
 
-    history.push({
+    navigate({
       pathname: '/',
     });
   };
-
+  
   return (
     <>
+      
       <button className={styles.btn} onClick={handleGoBack}>
         Go Back
       </button>
@@ -70,40 +70,22 @@ const MovieDetailsPage = () => {
             <h3>Additional information</h3>
             <ul className={styles.list}>
               <li className={styles.link}>
-                <Link
-                  to={{
-                    pathname: `${url}/cast`,
-                    state: {
-                      backUrl: state?.backUrl || '/',
-                      query: state?.query || '',
-                    },
-                  }}
-                >
+                <Link to="cast">
                   Cast
                 </Link>
               </li>
               <li className={styles.link}>
-                <Link
-                  to={{
-                    pathname: `${url}/reviews`,
-                    state: {
-                      backUrl: state?.backUrl || '/',
-                      query: state?.query || '',
-                    },
-                  }}
-                >
+                <Link to="reviews">
                   Reviews
                 </Link>
               </li>
             </ul>
 
             <Suspense fallback={<h1>Loading...</h1>}>
-              <Route path={`${path}/cast`}>
-                <Cast />
-              </Route>
-              <Route path={`${path}/reviews`}>
-                <Reviews />
-              </Route>
+              <Routes>
+                <Route path="cast" element={<Cast />} />         
+                <Route path="reviews" element={<Reviews />} />
+              </Routes>
             </Suspense>
           </div>
         </>

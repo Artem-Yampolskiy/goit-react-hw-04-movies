@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useLocation, Link, useHistory } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import * as moviesAPI from '../../Services/moveis-api';
 import qs from 'query-string';
 
 const MoviesPage = () => {
   const { pathname, search } = useLocation();
-  const history = useHistory();
+  const history = useNavigate();
   const [query, setQuery] = useState(qs.parse(search)?.query || '');
   const [resultSearch, setResultSearch] = useState([]);
 
@@ -33,7 +33,7 @@ const MoviesPage = () => {
       return;
     }
 
-    history.push({
+    history({
       pathname,
       search: `query=${query}`,
     });

@@ -1,4 +1,4 @@
-const BASE_URL = 'httrs://api.themoviedb.org';
+const BASE_URL = 'https://api.themoviedb.org';
 const API_KEY = 'fc2fe71399dcb812b93c437ce6085e65';
 
 async function ApiService(url) {
@@ -8,11 +8,11 @@ async function ApiService(url) {
     : Promise.reject(new Error('Not found'));
 }
 
-export function FetchPopularMovies() {
+export function fetchPopularMovies() {
   return ApiService(`${BASE_URL}/3/trending/all/day?api_key=${API_KEY}`);
 }
 
-export function fetchByQuery(query) {
+export function fetchMoviesByQuery(query) {
   return ApiService(
     `${BASE_URL}/3/search/movie?api_key=${API_KEY}&query=${query}`,
   );
