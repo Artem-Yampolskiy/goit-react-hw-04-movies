@@ -1,5 +1,5 @@
 import { useState, useEffect,lazy, Suspense  } from 'react';
-import { Link, useParams, useNavigate, useLocation, Route, Routes } from 'react-router-dom';
+import { Link, useParams, useNavigate, Route, Routes } from 'react-router-dom';
 import * as moviesAPI from '../../Services/moveis-api';
 
 import styles from './MovieDetailsPage.module.css';
@@ -12,7 +12,7 @@ const Reviews = lazy(() =>
 );
 
 const MovieDetailsPage = () => {
-  const { state } = useLocation();
+  // const { state } = useLocation();
   const { movieId } = useParams();  
   const [movie, setMovie] = useState(null);
   const navigate = useNavigate();
@@ -20,28 +20,9 @@ const MovieDetailsPage = () => {
   useEffect(() => {
     moviesAPI.fetchMovieDetails(movieId).then(setMovie);
   }, [movieId]);
-  
-  const handleGoBack = () => {
-    if (state?.query) {
-      navigate({
-        pathname: state.backUrl,
-        search: `query=${state.query}`,
-      });
-      return;
-    }
 
-    if (!state?.query && state?.backUrl) {
-      navigate({
-        pathname: state.backUrl,
-      });
-      return;
-    }
-
-    navigate({
-      pathname: '/',
-    });
-  };
-  
+  const handleGoBack = () => navigate(-1);
+    
   return (
     <>
       
